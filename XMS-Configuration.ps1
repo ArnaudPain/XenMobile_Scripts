@@ -61,10 +61,10 @@ write-host "Configure LDAP"
 
 $payload = @{
 	primaryHost='192.168.0.100'
-	secondaryHost='192.168.0.100'
+	secondaryHost='192.168.0.101'
 	port='389'
 	username='xms-svc@arnaud.lab'
-	password='Annec@r0le'
+	password='Citrix123'
 	userBaseDN='dc=arnaud,dc=lab'
 	groupBaseDN='dc=arnaud,dc=lab'
 	lockoutLimit='0'
@@ -89,13 +89,13 @@ $host.ui.RawUI.ForegroundColor = "yellow"
 write-host "Configure NetScaler"
 
 $payload = @{
- name='Display Name'
+ name='NetScaler'
  alias='Alias'
- url='https://externalURL.com'
+ url='https://mam.arnaud.biz'
  passwordRequired='false'
  logonType='Domain'
  id='2'
- default='false'
+ default='true'
 }
 
 $ns = $payload | ConvertTo-Json
@@ -116,7 +116,7 @@ $payload = @{
  description='Description'
  key='123456'
  secret='secreKey'
- virtualPhoneNumber='4086792222'
+ virtualPhoneNumber='1234567890'
  https='false'
  country='+93'
  carrierGateway='true'
@@ -142,11 +142,11 @@ $payload = @{
  secureChannelProtocol='TLS'
  port='587'
  authentication='true'
- username='test@gmail.com'
- password='123'
+ username='xms@gmail.com'
+ password='Citrix123'
  msSecurePasswordAuth='false'
  fromName='Test XMS'
- fromEmail='test@gail.com'
+ fromEmail='xms@gmail.com'
  numOfRetries='5'
  timeout='30'
  maxRecipients='100'
