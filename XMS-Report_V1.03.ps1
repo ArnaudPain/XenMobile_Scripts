@@ -451,6 +451,13 @@ Param(
 #@arnaud_pain on Twitter
 #http://arnaudpain.com
 #Created on September 9, 2017
+#
+#Version 1.02
+# Change following Choice Solutions feedback and debug
+#
+#Version 1.03
+# Add new Chapter for MDX Applications Settings
+#
 #endregion
 
 #region initial variable testing and setup
@@ -3130,7 +3137,7 @@ Function OutputSampleText
 		WriteWordLine 0 1 "Server Properties" "" $null 0 $true $false
 		WriteWordLine 0 0 ""
 		WriteWordLine 0 0 ""
-		WriteWordLine 0 0 "The current version of the script is 1.02, updates are planned to be implemented in the next few weeks."
+		WriteWordLine 0 0 "The current version of the script is 1.03, updates are planned to be implemented in the next few weeks."
 		WriteWordLine 0 0 ""
 		WriteWordLine 0 0 "If you have any question, feel free to send me email: arnaud.pain@arnaud.biz"
 		WriteWordLine 0 0 ""
@@ -3165,7 +3172,7 @@ Function OutputSampleText
 		Line 1 "Server Properties" ""
 		Line 0 ""
 		Line 0 ""
-		Line 0 "The current version of the script is 1.02, updates are planned to be implemented in the next few weeks."
+		Line 0 "The current version of the script is 1.03, updates are planned to be implemented in the next few weeks."
 		Line 0 ""
 		Line 0 "If you have any question, feel free to send me email: arnaud.pain@arnaud.biz"
 		Line 0 ""
@@ -3200,7 +3207,7 @@ Function OutputSampleText
 		WriteHTMLLine 0 1 "Server Properties" ""
 		WriteHTMLLine 0 0 ""
 		WriteHTMLLine 0 0 ""
-		WriteHTMLLine 0 0 "The current version of the script is 1.02, updates are planned to be implemented in the next few weeks."
+		WriteHTMLLine 0 0 "The current version of the script is 1.03, updates are planned to be implemented in the next few weeks."
 		WriteHTMLLine 0 0 ""
 		WriteHTMLLine 0 0 "If you have any question, feel free to send me email: arnaud.pain@arnaud.biz"
 		WriteHTMLLine 0 0 ""
