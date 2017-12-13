@@ -4258,21 +4258,17 @@ Function OutputMDXApplications
 		WriteWordLine 0 1 ""
 		$id=$app2.applicationListData.appList[$z].id
 		$Global:app=Invoke-RestMethod -Uri "https://${XMS}:4443/xenmobile/api/v1/application/mobile/$id" -Headers $headers -Method Get -verbose:$false
-		#if($app.container.ios -eq "null")
-		#{
 		WriteWordLine 0 1 ""
 		WriteWordLine 3 0 $app2.applicationListData.appList[$z].name": Android Settings"
 		WriteWordLine 0 1 ""
 		[System.Collections.Hashtable[]] $Global:AndroidWordTable = @();
 		Fullfill-Android
-		#}
-		#else{
+		$Script:Selection.InsertNewPage()
 		WriteWordLine 0 1 ""
 		WriteWordLine 3 0 $app2.applicationListData.appList[$z].name": iOS Settings"
 		WriteWordLine 0 1 ""
 		[System.Collections.Hashtable[]] $Global:iOSWordTable = @();
 		Fullfill-iOS
-		#}
 		$Script:Selection.InsertNewPage()
 		$Table = $Null
 		}
