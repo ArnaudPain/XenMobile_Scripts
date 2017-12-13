@@ -336,10 +336,10 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-	NAME: XMS-Report.ps1
-	VERSION: 1.01
+	NAME: XMS-Report_V1.03.ps1
+	VERSION: 1.03
 	AUTHOR: Arnaud Pain, Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters, Barry Schiffer, Jim Moyle
-	LASTEDIT: December 05, 2017
+	LASTEDIT: December 13, 2017
 #>
 
 #endregion
@@ -4248,7 +4248,6 @@ Function OutputMDXApplications
 		WriteWordLine 0 1 "$count2 MDX Applications found on the XMS Server $XMS"
 		WriteWordLine 0 1 ""
 		## Create an array of hashtables to store our services
-		[System.Collections.Hashtable[]] $Global:MDXWordTable = @();
 		## Create an array of hashtables to store references of cells that we wish to highlight after the table has been added
 		[System.Collections.Hashtable[]] $HighlightedCells = @();
 		[int] $CurrentPoliciesIndex = 0;
@@ -4259,9 +4258,21 @@ Function OutputMDXApplications
 		WriteWordLine 0 1 ""
 		$id=$app2.applicationListData.appList[$z].id
 		$Global:app=Invoke-RestMethod -Uri "https://${XMS}:4443/xenmobile/api/v1/application/mobile/$id" -Headers $headers -Method Get -verbose:$false
-		if(!$app.container.ios)
-		{Fullfill-Android}
-		else{Fullfill-iOS}
+		#if($app.container.ios -eq "null")
+		#{
+		WriteWordLine 0 1 ""
+		WriteWordLine 3 0 $app2.applicationListData.appList[$z].name": Android Settings"
+		WriteWordLine 0 1 ""
+		[System.Collections.Hashtable[]] $Global:AndroidWordTable = @();
+		Fullfill-Android
+		#}
+		#else{
+		WriteWordLine 0 1 ""
+		WriteWordLine 3 0 $app2.applicationListData.appList[$z].name": iOS Settings"
+		WriteWordLine 0 1 ""
+		[System.Collections.Hashtable[]] $Global:iOSWordTable = @();
+		Fullfill-iOS
+		#}
 		$Script:Selection.InsertNewPage()
 		$Table = $Null
 		}
@@ -4275,9 +4286,12 @@ Function OutputMDXApplications
 		Line 0 ""
 		$id=$app2.applicationListData.appList[$z].id
 		$Global:app=Invoke-RestMethod -Uri "https://${XMS}:4443/xenmobile/api/v1/application/mobile/$id" -Headers $headers -Method Get -verbose:$false
-		if(!$app.container.ios)
-		{Fullfill-Android}
-		else{Fullfill-iOS}
+		Line 0 $app2.applicationListData.appList[$z].name": Android Settings"
+		Line 0 ""
+		Fullfill-Android
+		Line 0 $app2.applicationListData.appList[$z].name": iOS Settings"
+		Line 0 ""
+		Fullfill-iOS
 		Line 0 ""
 		}
 	}
@@ -4289,9 +4303,14 @@ Function OutputMDXApplications
 		$rowdata = @()
 		$id=$app2.applicationListData.appList[$z].id
 		$Global:app=Invoke-RestMethod -Uri "https://${XMS}:4443/xenmobile/api/v1/application/mobile/$id" -Headers $headers -Method Get -verbose:$false
-		if(!$app.container.ios)
-		{Fullfill-Android}
-		else{Fullfill-iOS}
+		WriteHTMLLine 0 0 ""
+		WriteHTMLLine 0 1 $app2.applicationListData.appList[$z].name": Android Settings"
+		WriteHTMLLine 0 0 ""
+		Fullfill-Android
+		WriteHTMLLine 0 0 ""
+		WriteHTMLLine 0 1 $app2.applicationListData.appList[$z].name": iOS Settings"
+		WriteHTMLLine 0 0 ""
+		Fullfill-iOS
 		}
 	}
 	
@@ -4305,10 +4324,10 @@ Function Fullfill-Android
 			{
 			for ($v=0;$v -lt $count; $v++)
 			{
-				$WordTableRowHash = @{ Title = $app.container.android.policies[$CurrentPoliciesIndex].title;
+				$WordTableRowHash = @{ Settings = $app.container.android.policies[$CurrentPoliciesIndex].title;
 									   Value = $app.container.android.policies[$CurrentPoliciesIndex].policyValue;
 									 }
-				$Global:MDXWordTable += $WordTableRowHash;
+				$Global:AndroidWordTable += $WordTableRowHash;
 				$CurrentPoliciesIndex++;
 			}
 			}
@@ -4337,9 +4356,9 @@ Function Fullfill-Android
 	If($MSWord -or $PDF)
 	{
 		## Add the table to the document, using the hashtable (-Alt is short for -AlternateBackgroundColor!)
-		$Table = AddWordTable -Hashtable $MDXWordTable `
-		-Columns Title, Value `
-		-Headers "Title", "Value" `
+		$Table = AddWordTable -Hashtable $AndroidWordTable `
+		-Columns Settings, Value `
+		-Headers "Settings", "Value" `
 		-Format -155 `
 		
 		## IB - Set the header row format after the SetWordTableAlternateRowColor function as it will paint the header row!
@@ -4355,7 +4374,7 @@ Function Fullfill-Android
 		#indent the entire table 1 tab stop
 		$Table.Rows.SetLeftIndent($Indent0TabStops,$wdAdjustProportional)
 		FindWordDocumentEnd
-		#$Table = $Null
+		$Table = $Null
 	}
 	ElseIf($Text)
 	{
@@ -4363,7 +4382,7 @@ Function Fullfill-Android
 	ElseIf($HTML)
 	{
 		$columnHeaders = @(
-		'Title',($htmlsilver -bor $htmlbold),
+		'Settings',($htmlsilver -bor $htmlbold),
 		'Value',($htmlsilver -bor $htmlbold))
 		$msg = $app.container.name
 		FormatHTMLTable $msg "auto" -rowArray $rowdata -columnArray $columnHeaders
@@ -4379,10 +4398,10 @@ Function Fullfill-iOS
 			{
 			for ($v=0;$v -lt $count; $v++)
 			{
-				$WordTableRowHash = @{ Title = $app.container.ios.policies[$CurrentPoliciesIndex].title;
+				$WordTableRowHash = @{ Settings = $app.container.ios.policies[$CurrentPoliciesIndex].title;
 									   Value = $app.container.ios.policies[$CurrentPoliciesIndex].policyValue;
 									 }
-				$Global:MDXWordTable += $WordTableRowHash;
+				$Global:iOSWordTable += $WordTableRowHash;
 				$CurrentPoliciesIndex++;
 			}
 			}
@@ -4411,9 +4430,9 @@ Function Fullfill-iOS
 	If($MSWord -or $PDF)
 	{
 		## Add the table to the document, using the hashtable (-Alt is short for -AlternateBackgroundColor!)
-		$Table = AddWordTable -Hashtable $MDXWordTable `
-		-Columns Title, Value `
-		-Headers "Title", "Value" `
+		$Table = AddWordTable -Hashtable $iOSWordTable `
+		-Columns Settings, Value `
+		-Headers "Settings", "Value" `
 		-Format -155 `
 		
 		## IB - Set the header row format after the SetWordTableAlternateRowColor function as it will paint the header row!
@@ -4429,7 +4448,7 @@ Function Fullfill-iOS
 		#indent the entire table 1 tab stop
 		$Table.Rows.SetLeftIndent($Indent0TabStops,$wdAdjustProportional)
 		FindWordDocumentEnd
-		#$Table = $Null
+		$Table = $Null
 	}
 	ElseIf($Text)
 	{
@@ -4437,7 +4456,7 @@ Function Fullfill-iOS
 	ElseIf($HTML)
 	{
 		$columnHeaders = @(
-		'Title',($htmlsilver -bor $htmlbold),
+		'Settings',($htmlsilver -bor $htmlbold),
 		'Value',($htmlsilver -bor $htmlbold))
 		$msg = $app.container.name
 		FormatHTMLTable $msg "auto" -rowArray $rowdata -columnArray $columnHeaders
